@@ -1,0 +1,70 @@
+﻿训练软件下载：https://sourceforge.net/projects/vietocr/files/jTessBoxEditor/
+
+官方字库下载：https://github.com/tesseract-ocr/tesseract/wiki/Data-Files#format-of-traineddata-files
+
+点击tools后再点击Merge TIFF，将所需要的图片集转换成tif格式，源图片集格式支持jpg和tif两种。合成的图片集命名格式为[chi_sim].[test].[exp0].tif 第一个空是字典格式，第二个空位图片集的名字，第三个空位exp[test]。
+
+生成BOX文件
+D:\jTessBoxEditorFX\tesseract-ocr\tesseract.exe chi_sim.test.exp0.tif chi_sim.test.exp0 -l chi_sim batch.nochop makebox 
+
+生成tr文件
+D:\jTessBoxEditorFX\tesseract-ocr\tesseract.exe chi_sim.test.exp0.tif chi_sim.test.exp0 nobatch box.train
+
+生成unicharset文件
+D:\jTessBoxEditorFX\tesseract-ocr\unicharset_extractor.exe chi_sim.test.exp0.box
+
+新建font_properties文件 用记事本新建一个明文font_properties.txt
+内容格式为test 0 0 0 0 0，test是新建tif中间的内容 
+
+在分别运行三个命令对tr特征集合进行操作 
+生成shape文件
+D:\jTessBoxEditorFX\tesseract-ocr\shapeclustering.exe -F font_properties.txt -U unicharset chi_sim.test.exp0.tr 
+
+生成字符正常化特征文件
+D:\jTessBoxEditorFX\tesseract-ocr\Mftraining.exe -F font_properties.txt -U unicharset -O unicharset chi_sim.test.exp0.tr
+
+生成字符正常化特征文件
+D:\jTessBoxEditorFX\tesseract-ocr\cntraining.exe chi_sim.test.exp0.tr
+
+重命名把目录下的unicharset、inttemp、pffmtable、shapetable、normproto这五个文件前面都加上test.（就是你的tif中间的名字）
+
+D:\jTessBoxEditorFX\tesseract-ocr\combine_tessdata test.（后面是有点的） 
+
+识别测试
+D:\jTessBoxEditorFX\tesseract-ocr\tesseract chi_sim.test.exp0.tif output -l test
+
+
+
+
+
+
+
+
+
+---------------
+rem 执行改批处理前先要目录下创建font_properties文件  
+  
+
+
+echo 生成tr文件
+D:\jTessBoxEditorFX\tesseract-ocr\tesseract.exe chi_sim.test.exp0.tif chi_sim.test.exp0 nobatch box.train
+
+echo 生成unicharset文件
+D:\jTessBoxEditorFX\tesseract-ocr\unicharset_extractor.exe chi_sim.test.exp0.box
+
+
+
+echo 在分别运行三个命令对tr特征集合进行操作 
+D:\jTessBoxEditorFX\tesseract-ocr\shapeclustering.exe -F font_properties.txt -U unicharset chi_sim.test.exp0.tr 
+D:\jTessBoxEditorFX\tesseract-ocr\Mftraining.exe -F font_properties.txt -U unicharset -O unicharset chi_sim.test.exp0.tr
+D:\jTessBoxEditorFX\tesseract-ocr\cntraining.exe chi_sim.test.exp0.tr
+
+rem 重命名把目录下的unicharset、inttemp、pffmtable、shapetable、normproto这五个文件前面都加上test.（就是你的tif中间的名字）
+
+    rename unicharset test.unicharset
+	rename normproto test.normproto  
+    rename inttemp test.inttemp  
+    rename pffmtable test.pffmtable  
+    rename shapetable test.shapetable   
+	
+D:\jTessBoxEditorFX\tesseract-ocr\combine_tessdata test. 
