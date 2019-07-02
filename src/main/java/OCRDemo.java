@@ -31,7 +31,7 @@ public class OCRDemo {
 
             System.out.println(result2);
         } catch (Exception e) {
-            System.out.println(e.toString());//打印图片内容
+            e.printStackTrace();
         }
     }
 
